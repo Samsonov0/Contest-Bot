@@ -1,25 +1,25 @@
 version: "3.8"
 
 services:
-  star_shop_app:
+  contest_app:
     build: .
-    container_name: star_shop_app
+    container_name: contest_app
     command: >
       sh -c "pipenv run alembic upgrade head &&
              pipenv run python main.py"
     env_file:
       - .env
     depends_on:
-      - star_shop_database
-      - star_shop_redis
+      - contest_database
+      - contest_redis
     networks:
-      - star_shop_dev
+      - contest_dev
     volumes:
       - .:/app
     restart: unless-stopped
 
-  star_shop_database:
-    container_name: star_shop_database
+  contest_database:
+    container_name: contest_database
     image: postgres:14.1-alpine
     environment:
       - POSTGRES_USER=StarAdmUser
@@ -30,12 +30,12 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
-      - star_shop_dev
+      - contest_dev
     restart: always
 
-  star_shop_redis:
+  contest_redis:
     image: redis:alpine
-    container_name: star_shop_redis
+    container_name: contest_redis
     volumes:
       - task-storage:/data
     ports:
@@ -43,12 +43,12 @@ services:
     env_file:
       - .env
     networks:
-      - star_shop_dev
+      - contest_dev
     restart: unless-stopped
 
 networks:
-  star_shop_dev:
-    name: star_shop_dev_network
+  contest_dev:
+    name: contest_dev_network
     driver: bridge
 
 volumes:
