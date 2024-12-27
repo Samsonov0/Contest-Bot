@@ -1,0 +1,27 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+aiogram = "*"
+sqlalchemy = "*"
+psycopg2-binary = "*"
+pydantic-settings = "*"
+alembic = "*"
+redis = "*"
+asyncpg = "*"
+greenlet = "*"
+bs4 = "*"
+requests = "*"
+pyrogram = "*"
+telethon = "*"
+celery = "*"
+celery-pool-asyncio = "*"
+rq = "*"
+rq-scheduler = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.12"

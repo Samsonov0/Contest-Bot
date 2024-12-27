@@ -1,0 +1,82 @@
+version: "3.8"
+
+services:
+  star_shop_app:
+    build: .
+    container_name: star_shop_app
+    env_file:
+      - .env
+    depends_on:
+      - star_shop_database
+      - star_shop_redis
+    networks:
+      - star_shop_dev
+    volumes:
+      - .:/app
+    restart: unless-stopped
+
+  star_shop_database:
+    container_name: star_shop_database
+    image: postgres:14.1-alpine
+    environment:
+      - POSTGRES_USER=StarAdmUser
+      - POSTGRES_PASSWORD=Star1Adm1User2
+      - POSTGRES_DB=StarDatabaseName
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - star_shop_dev
+    restart: always
+
+  star_shop_redis:
+    image: redis:alpine
+    container_name: star_shop_redis
+    volumes:
+      - task-storage:/data
+    ports:
+      - "6379:6379"
+    env_file:
+      - .env
+    networks:
+      - star_shop_dev
+    restart: unless-stopped
+
+
+  star_shop_celery:
+    build: .
+    container_name: star_shop_celery
+    command: pipenv run celery -A tasks worker --loglevel=info
+    volumes:
+      - .:/app
+    depends_on:
+      - star_shop_redis
+    networks:
+      - star_shop_dev
+    env_file:
+      - .env
+    restart: unless-stopped
+
+  star_shop_rq_worker:
+    build: .
+    container_name: star_shop_rq_worker
+    command: pipenv run rq worker -u redis://star_shop_redis:6379 --with-scheduler
+    volumes:
+      - .:/app
+    depends_on:
+      - star_shop_redis
+    networks:
+      - star_shop_dev
+    env_file:
+      - .env
+    restart: unless-stopped
+
+networks:
+  star_shop_dev:
+    name: star_shop_dev_network
+    driver: bridge
+
+volumes:
+  postgres_data: null
+  task-storage: null
