@@ -1,5 +1,5 @@
 # Use an official Python runtime as a parent image
-FROM python:3.10-slim
+FROM python:3.12-slim
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -27,7 +27,3 @@ COPY Pipfile* ./
 
 # Install dependencies
 RUN pipenv install
-
-
-# Command to run the application
-CMD ["pipenv", "run", "python", "main.py"]
